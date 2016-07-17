@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.css" />
+<style>
+html, body, #map {
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+
+<div id="map">
+
+<script src="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.js"></script>
+<script>
+var map = L.map("map", {
+	minZoom: 1,
+	maxZoom: 7
+}).setView([51, 3], 3);
+
+L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}", {}).addTo(map);
+L.tileLayer("http://localhost:8000/tiles/395457/{z}_{x}_{y}.png", {}).addTo(map);
+L.tileLayer("http://localhost:8000/tiles/395450/{z}_{x}_{y}.png", {}).addTo(map);
+
+</script>
+</body>
+</html>
