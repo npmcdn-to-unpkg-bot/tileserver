@@ -24,7 +24,6 @@ var map = L.map("map", {
 }).setView([51, 3], 3);
 
 L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}", {}).addTo(map);
-L.tileLayer("http://localhost:8000/tiles/395457/{z}_{x}_{y}.png", {}).addTo(map);
 L.tileLayer("http://localhost:8000/tiles/395450/{z}_{x}_{y}.png", {}).addTo(map);
 
 </script>
