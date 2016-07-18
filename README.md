@@ -1,1 +1,1 @@
-# Generating species distribution map tiles with Mapnik
+# Tileserver with Mapnik and MongoDB

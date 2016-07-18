@@ -20,7 +20,7 @@ html, body, #map {
 <script>
 var map = L.map("map", {
 	minZoom: 1,
-	maxZoom: 7
+	maxZoom: 10
 }).setView([51, 3], 3);
 
 L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}", {}).addTo(map);

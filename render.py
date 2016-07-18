@@ -3,13 +3,30 @@ import math
 import os
 import time
 import config
+import pymongo
+import StringIO
+import PIL.Image
+from io import BytesIO
+from bson.binary import Binary
 
 class Renderer:
 
 	def __init__(self, id, config):
 		self.id = id
+		client = pymongo.MongoClient()
+		self.db = client.tiles
+		self.db.tiles.ensure_index([
+			("id", pymongo.ASCENDING),
+			("xyz", pymongo.ASCENDING)
+		])
 		if not os.path.exists("tiles/%s" % (self.id)):
 			os.makedirs("tiles/%s" % (self.id))
+
+		buf = BytesIO()
+		im = PIL.Image.new("RGBA", (256, 256))
+		im.save(buf, "png")
+		self.db.blank.drop()
+		self.db.blank.insert_one({ "tile": Binary(buf.getvalue()) })
 
 		self.datasource = mapnik.PostGIS(
 			host = config.host,
@@ -28,7 +45,7 @@ class Renderer:
 		symbolizer = mapnik.MarkersSymbolizer()
 		symbolizer.width = 5.0
 		symbolizer.stroke_width = 0.0
-		symbolizer.fill = mapnik.Color("#ff9900")
+		symbolizer.fill = mapnik.Color("#cc3300")
 		symbolizer.opacity = 1.0
 		symbolizer.allow_overlap = mapnik.Expression("True")
 		rule.symbols.append(symbolizer)
@@ -67,7 +84,28 @@ class Renderer:
 		m.zoom_to_box(merc_bbox)
 		m.buffer_size = 10
 
-		mapnik.render_to_file(m, "tiles/%s/%s_%s_%s.png" % (self.id, z, x, y), "png")
+		im = mapnik.Image(256, 256)
+		mapnik.render(m, im)
+		ims = im.tostring()
+		pim = PIL.Image.frombuffer("RGBA", (256, 256), ims, "raw", "RGBA", 0, 1)
+		buf = BytesIO()
+		pim.save(buf, "png")
+		self.db.tiles.remove({
+			"id": self.id,
+			"xyz": "%s_%s_%s" % (x, y, z)
+		})
+		if pim.getcolors() is None or len(pim.getcolors()) == 1:
+			self.db.tiles.insert_one({
+				"id": self.id,
+				"xyz": "%s_%s_%s" % (x, y, z),
+				"blank": True
+			})
+		else:
+			self.db.tiles.insert_one({
+				"id": self.id,
+				"xyz": "%s_%s_%s" % (x, y, z),
+				"tile": Binary(buf.getvalue())
+			})
 
 	def tiles(self, minzoom, maxzoom):
 		for z in range(minzoom, maxzoom + 1):
@@ -77,7 +115,7 @@ class Renderer:
 					print "%s %s %s %s" % (self.id, z, x, y)
 					self.tile(x, y, z)
 
-renderer = Renderer(395457, config)
+renderer = Renderer(395450, config)
 start_time = time.time()
-renderer.tiles(1, 7)
+renderer.tiles(1, 4)
 print("--- %s seconds ---" % (time.time() - start_time))
