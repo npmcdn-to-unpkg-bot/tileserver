@@ -11,7 +11,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
 	def do_GET(self):
-		print self.path
 		params = self.path.split("/")
 
 		if len(params) == 3:
@@ -20,7 +19,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 				"xyz": params[2]
 			}
 			tile = self.db.tiles.find_one(query)
-			if "blank" in tile and tile["blank"]:
+			if tile is None or ("blank" in tile and tile["blank"]):
 				self.send_response(200)
 				self.send_header("Content-type", "image/png")
 				self.end_headers()

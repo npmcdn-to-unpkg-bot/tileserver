@@ -19,8 +19,6 @@ class Renderer:
 			("id", pymongo.ASCENDING),
 			("xyz", pymongo.ASCENDING)
 		])
-		if not os.path.exists("tiles/%s" % (self.id)):
-			os.makedirs("tiles/%s" % (self.id))
 
 		buf = BytesIO()
 		im = PIL.Image.new("RGBA", (256, 256))
@@ -47,7 +45,7 @@ class Renderer:
 		symbolizer = mapnik.MarkersSymbolizer()
 		symbolizer.width = 5.0
 		symbolizer.stroke_width = 0.0
-		symbolizer.fill = mapnik.Color("#ffffff")
+		symbolizer.fill = mapnik.Color("#ff0000")
 		symbolizer.opacity = 1.0
 		symbolizer.allow_overlap = mapnik.Expression("True")
 		rule.symbols.append(symbolizer)

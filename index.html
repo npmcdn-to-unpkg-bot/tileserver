@@ -10,6 +10,15 @@ html, body, #map {
 	width: 100%;
 	height: 100%;
 }
+.leaflet-layer.red img {
+	-webkit-filter: hue-rotate(40deg);
+}
+.leaflet-layer.pink img {
+	-webkit-filter: hue-rotate(-60deg);
+}
+.leaflet-layer.blue img {
+	-webkit-filter: hue-rotate(-150deg);
+}
 </style>
 </head>
 <body>
@@ -24,7 +33,8 @@ var map = L.map("map", {
 }).setView([51, 3], 3);
 
 L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}", {}).addTo(map);
-L.tileLayer("http://localhost:8080/395450/{x}_{y}_{z}", {}).addTo(map);
+var layer = L.tileLayer("http://localhost:8080/395450/{x}_{y}_{z}", {}).addTo(map);
+layer.getContainer().className += " blue";
 
 </script>
 </body>
