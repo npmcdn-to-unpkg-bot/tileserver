@@ -25,6 +25,8 @@ class Renderer:
 		buf = BytesIO()
 		im = PIL.Image.new("RGBA", (256, 256))
 		im.save(buf, "png")
+		self.blanksize = buf.__sizeof__()
+		print "Blank size: %i" % (self.blanksize)
 		self.db.blank.drop()
 		self.db.blank.insert_one({ "tile": Binary(buf.getvalue()) })
 
@@ -45,7 +47,7 @@ class Renderer:
 		symbolizer = mapnik.MarkersSymbolizer()
 		symbolizer.width = 5.0
 		symbolizer.stroke_width = 0.0
-		symbolizer.fill = mapnik.Color("#cc3300")
+		symbolizer.fill = mapnik.Color("#ffffff")
 		symbolizer.opacity = 1.0
 		symbolizer.allow_overlap = mapnik.Expression("True")
 		rule.symbols.append(symbolizer)
@@ -94,7 +96,7 @@ class Renderer:
 			"id": self.id,
 			"xyz": "%s_%s_%s" % (x, y, z)
 		})
-		if pim.getcolors() is None or len(pim.getcolors()) == 1:
+		if buf.__sizeof__() == self.blanksize:
 			self.db.tiles.insert_one({
 				"id": self.id,
 				"xyz": "%s_%s_%s" % (x, y, z),
@@ -115,7 +117,7 @@ class Renderer:
 					print "%s %s %s %s" % (self.id, z, x, y)
 					self.tile(x, y, z)
 
-renderer = Renderer(395450, config)
 start_time = time.time()
-renderer.tiles(1, 4)
+Renderer(395450, config).tiles(1, 8)
+Renderer(395457, config).tiles(1, 8)
 print("--- %s seconds ---" % (time.time() - start_time))
