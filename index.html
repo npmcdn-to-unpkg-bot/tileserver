@@ -10,15 +10,13 @@ html, body, #map {
 	width: 100%;
 	height: 100%;
 }
-.leaflet-layer.red img {
-	-webkit-filter: hue-rotate(40deg);
-}
-.leaflet-layer.pink img {
-	-webkit-filter: hue-rotate(-60deg);
-}
-.leaflet-layer.blue img {
-	-webkit-filter: hue-rotate(-150deg);
-}
+.leaflet-layer.red img { -webkit-filter: hue-rotate(40deg); }
+.leaflet-layer.fuchsia img { -webkit-filter: hue-rotate(320deg); }
+.leaflet-layer.blue img { -webkit-filter: hue-rotate(220deg); }
+.leaflet-layer.brightblue img { -webkit-filter: hue-rotate(30deg) invert(1); }
+.leaflet-layer.pink img { -webkit-filter: hue-rotate(90deg) invert(1); }
+.leaflet-layer.yellow img { -webkit-filter: hue-rotate(220deg) invert(1); }
+.leaflet-layer.green img { -webkit-filter: hue-rotate(260deg) invert(1); }
 </style>
 </head>
 <body>
@@ -33,6 +31,8 @@ var map = L.map("map", {
 }).setView([51, 3], 3);
 
 L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}", {}).addTo(map);
+var layer2 = L.tileLayer("http://localhost:8080/395457/{x}_{y}_{z}", {}).addTo(map);
+layer2.getContainer().className += " red";
 var layer = L.tileLayer("http://localhost:8080/395450/{x}_{y}_{z}", {}).addTo(map);
 layer.getContainer().className += " blue";
 
